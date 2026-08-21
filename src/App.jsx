@@ -123,7 +123,7 @@ export default function App() {
       return;
     }
     exportToCSV(deals);
-    setToast({ type: 'success', message: 'Deal register exported as CSV!' });
+    setToast({ type: 'success', message: 'Deals exported as official Excel (.xlsx) spreadsheet!' });
   }, [deals]);
 
   return (
@@ -138,6 +138,20 @@ export default function App() {
         onOpenCarousel={() => setIsCarouselOpen(true)}
       />
 
+      {/* 1. Full-Width Wide View OC Admin Panel at the Top */}
+      <section style={{ marginBottom: '18px' }}>
+        <AdminDealForm
+          deals={deals}
+          evaluations={evaluations}
+          onAddDeal={handleAddDeal}
+          onBulkAddDeals={handleBulkAddDeals}
+          onAddEvaluation={handleAddEvaluation}
+          onBulkAddEvaluations={handleBulkAddEvaluations}
+          setToast={setToast}
+        />
+      </section>
+
+      {/* 2. Market Overview & Main Content below the OC Admin Panel */}
       <section className="grid">
         <div>
           <MarketOverview deals={deals} />
@@ -192,16 +206,6 @@ export default function App() {
 
         <aside>
           <LatestDeals deals={deals} />
-
-          <AdminDealForm
-            deals={deals}
-            evaluations={evaluations}
-            onAddDeal={handleAddDeal}
-            onBulkAddDeals={handleBulkAddDeals}
-            onAddEvaluation={handleAddEvaluation}
-            onBulkAddEvaluations={handleBulkAddEvaluations}
-            setToast={setToast}
-          />
         </aside>
       </section>
 

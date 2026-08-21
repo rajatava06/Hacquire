@@ -39,18 +39,40 @@ export default function EnlargedCarouselModal({ isOpen, onClose, deals = [] }) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-container enlarged-carousel-window" onClick={(e) => e.stopPropagation()}>
-        
+
         {/* Modal Header */}
-        <div className="modal-header">
+        <div className="modal-header" style={{ position: 'relative' }}>
           <div className="modal-title">
-            <div className="logo-small">H</div>
+            <div className="logo-small" style={{ width: 'auto', padding: '0 14px', letterSpacing: '1px', fontWeight: 900 }}>
+              HACQUIRE
+            </div>
             <div>
               <div className="tag">
                 <Sparkles size={12} className="orange" />
                 Live Market Floor
               </div>
-              <h2>Deals Done Carousel</h2>
+              <h2>Executed Deals</h2>
             </div>
+          </div>
+
+          {/* Middle Top Title: Omega 6.0 */}
+          <div className="modal-center-header" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', pointerEvents: 'none' }}>
+            <span style={{
+              fontSize: '1.4rem',
+              fontWeight: 950,
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
+              background: 'linear-gradient(135deg, #ffffff 0%, #ffae42 45%, #ff7a18 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              padding: '6px 24px',
+              borderRadius: '14px',
+              border: '1px solid rgba(255, 120, 24, 0)',
+              boxShadow: '0 0 25px rgba(19, 181, 73, 0.18)',
+              display: 'inline-block'
+            }}>
+              Omega 6.0
+            </span>
           </div>
 
           <div className="modal-actions">
@@ -63,7 +85,7 @@ export default function EnlargedCarouselModal({ isOpen, onClose, deals = [] }) {
 
         {/* Modal Filter Bar */}
         <div className="modal-filter-bar">
-          <input 
+          <input
             className="modal-search"
             placeholder="Search deals in carousel…"
             value={searchQuery}
@@ -92,7 +114,7 @@ export default function EnlargedCarouselModal({ isOpen, onClose, deals = [] }) {
             <>
               {/* Row 1 Track (Scrolling Left) */}
               <div className="carousel-row-container">
-                <div 
+                <div
                   className="carousel-row-track"
                   style={{ animationDuration: `${baseDuration}s` }}
                 >
@@ -104,7 +126,7 @@ export default function EnlargedCarouselModal({ isOpen, onClose, deals = [] }) {
 
               {/* Row 2 Track (Scrolling Right / Reverse Direction) */}
               <div className="carousel-row-container">
-                <div 
+                <div
                   className="carousel-row-track reverse"
                   style={{ animationDuration: `${baseDuration * 1.15}s` }}
                 >
@@ -117,6 +139,13 @@ export default function EnlargedCarouselModal({ isOpen, onClose, deals = [] }) {
           )}
         </div>
 
+        {/* Modal Footer Notice */}
+        <div className="modal-footer" style={{ padding: '10px 24px', background: 'rgba(8, 17, 31, 0.85)', borderTop: '1px solid var(--line)', textAlign: 'center' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 900, color: 'var(--gold)', letterSpacing: '1px' }}>
+            CONTACT OCS IF THERE IS ANY DOUBT
+          </span>
+        </div>
+
       </div>
     </div>
   );
@@ -125,8 +154,8 @@ export default function EnlargedCarouselModal({ isOpen, onClose, deals = [] }) {
 function CarouselCard({ deal }) {
   const isMerger = (deal.type || '').toLowerCase().includes('merger');
   const priceDisplay = isMerger ? `${deal.price}% share` : formatMoney(deal.price);
-  const typeLower = (deal.type || 'feature').toLowerCase().includes('consult') 
-    ? 'consulting' 
+  const typeLower = (deal.type || 'feature').toLowerCase().includes('consult')
+    ? 'consulting'
     : isMerger ? 'merger' : 'feature';
 
   const sebiStatus = deal.sebiStatus || 'Approved';

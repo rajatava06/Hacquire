@@ -14,7 +14,7 @@ export default function Header({ lastUpdated, onOpenCarousel }) {
             <Activity className="w-3 h-3 text-amber-500" size={12} />
             FED KIIT presents
           </div>
-          <h1>HACQUIRE — Live Deal Ticker</h1>
+          <h1>HACQUIRE — Live Deal Tracker</h1>
         </div>
       </div>
       <div className="header-meta">
@@ -22,13 +22,13 @@ export default function Header({ lastUpdated, onOpenCarousel }) {
           <div className="live">
             <span className="dot"></span> MARKET OPEN
           </div>
-          <button 
+          <button
             className="secondary expand-carousel-header-btn"
             onClick={onOpenCarousel}
-            title="Open enlarged Deals Done Carousel in separate window"
+            title="Open enlarged Live Executed Deals window"
           >
             <Maximize2 size={14} />
-            Enlarge Carousel
+            Enlarge Board
           </button>
         </div>
         <div style={{ marginTop: '6px', fontSize: '0.8rem', display: 'flex', gap: '12px', justifyContent: 'flex-end', alignItems: 'center' }}>

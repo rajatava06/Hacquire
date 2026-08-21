@@ -62,9 +62,9 @@ export default function DealsTable({
           <option value="Full Merger">Full Merger</option>
         </select>
 
-        <button className="secondary" onClick={onExport}>
+        <button className="secondary" onClick={onExport} title="Download proper Microsoft Excel (.xlsx) file">
           <Download size={16} />
-          Export CSV
+          Export Excel (.xlsx)
         </button>
       </div>
 

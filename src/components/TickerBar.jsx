@@ -37,7 +37,7 @@ export default function TickerBar({ deals = [], onOpenCarousel }) {
       <button 
         className="ticker-enlarge-btn"
         onClick={onOpenCarousel}
-        title="Open enlarged Deals Done Carousel window"
+        title="Open enlarged Live Executed Deals window"
       >
         <Maximize2 size={16} />
         <span>Enlarge</span>

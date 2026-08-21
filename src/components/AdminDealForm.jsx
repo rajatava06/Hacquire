@@ -31,7 +31,7 @@ export default function AdminDealForm({
   onBulkAddEvaluations,
   setToast 
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [sectionMode, setSectionMode] = useState('deals'); // 'deals' | 'evaluations'
   const [activeTab, setActiveTab] = useState('excel'); // 'excel' | 'single'
 
