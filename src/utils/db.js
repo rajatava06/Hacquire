@@ -11,12 +11,12 @@ function getLocalDeals() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch (e) {
     console.error('Failed reading local deals:', e);
   }
-  return DEFAULT_DEALS;
+  return [];
 }
 
 function saveLocalDeals(deals) {
@@ -40,7 +40,7 @@ export async function fetchDealsFromDB() {
 
     if (res.ok) {
       const data = await res.json();
-      if (data && Array.isArray(data) && data.length > 0) {
+      if (data && Array.isArray(data)) {
         const formatted = data.map(d => ({
           id: d.id,
           time: d.time,

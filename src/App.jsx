@@ -105,14 +105,16 @@ export default function App() {
   }, []);
 
   const handleResetDefaults = useCallback(async () => {
-    if (window.confirm('Reset all deals and pitch evaluations back to initial default dataset?')) {
-      const updatedDeals = await bulkSaveDealsToDB(DEFAULT_DEALS);
-      setDeals(updatedDeals);
-
-      const updatedEvals = await bulkSaveEvaluationsToDB(DEFAULT_EVALUATIONS);
-      setEvaluations(updatedEvals);
-
-      setToast({ type: 'success', message: 'Deals and Evaluations reset to default dataset.' });
+    if (window.confirm('Clear all deals and pitch evaluations data?')) {
+      try {
+        localStorage.removeItem('hacquire_live_deals_v1');
+        localStorage.removeItem('hacquire_live_evaluations_v1');
+        fetch('/api/deals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '[]' });
+        fetch('/api/evaluations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '[]' });
+      } catch (e) {}
+      setDeals([]);
+      setEvaluations([]);
+      setToast({ type: 'success', message: 'All demo data removed.' });
       setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     }
   }, []);

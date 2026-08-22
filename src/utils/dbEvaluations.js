@@ -7,12 +7,12 @@ function getLocalEvaluations() {
     const saved = localStorage.getItem(STORAGE_EVALS_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch (e) {
     console.error('Failed reading local evaluations:', e);
   }
-  return DEFAULT_EVALUATIONS;
+  return [];
 }
 
 function saveLocalEvaluations(evals) {
@@ -33,7 +33,7 @@ export async function fetchEvaluationsFromDB() {
 
     if (res.ok) {
       const data = await res.json();
-      if (data && Array.isArray(data) && data.length > 0) {
+      if (data && Array.isArray(data)) {
         saveLocalEvaluations(data);
         return data;
       }
