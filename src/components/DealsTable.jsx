@@ -72,7 +72,6 @@ export default function DealsTable({
         <table>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Time</th>
               <th>Type</th>
               <th>Seller (Name & Track)</th>
@@ -81,14 +80,12 @@ export default function DealsTable({
               <th>Buyer (Name & Track)</th>
               <th>Negotiated Price</th>
               <th>SEBI Status</th>
-              <th style={{ textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredDeals.length > 0 ? (
               filteredDeals.map((d) => (
                 <tr key={d.id}>
-                  <td><strong style={{ color: 'var(--orange)', fontFamily: 'monospace' }}>{d.id}</strong></td>
                   <td style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>{d.time || '—'}</td>
                   <td>
                     <span className="pill feature" style={{ fontSize: '0.72rem' }}>
@@ -120,20 +117,11 @@ export default function DealsTable({
                   <td>
                     {renderSebiPill(d.sebiStatus)}
                   </td>
-                  <td style={{ textAlign: 'right' }}>
-                    <button 
-                      className="action-btn"
-                      title={`Remove ${d.id}`}
-                      onClick={() => onDeleteDeal(d.id)}
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td className="empty" colSpan={10}>
+                <td className="empty" colSpan={8}>
                   No deals match your search criteria.
                 </td>
               </tr>

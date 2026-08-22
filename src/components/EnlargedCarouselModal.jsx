@@ -33,8 +33,8 @@ export default function EnlargedCarouselModal({ isOpen, onClose, deals = [] }) {
   const track1 = makeLoop(row1Deals.length ? row1Deals : filteredDeals);
   const track2 = makeLoop(row2Deals.length ? row2Deals : filteredDeals);
 
-  // Fixed smooth, decreased carousel speed (65s duration)
-  const baseDuration = 65;
+  // Smooth slow carousel speed (120s duration)
+  const baseDuration = 200;
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -162,12 +162,9 @@ function CarouselCard({ deal }) {
 
   return (
     <div className={`enlarged-card card-glow-${typeLower}`}>
-      {/* Top Bar: ID, Deal Type & TIME */}
+      {/* Top Bar: Deal Type & TIME */}
       <div className="card-header-row">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span className="card-id-lbl">#{deal.id}</span>
-          <span className={`pill-badge type-${typeLower}`}>{deal.type}</span>
-        </div>
+        <span className={`pill-badge type-${typeLower}`}>{deal.type}</span>
         <span className="card-time" style={{ fontWeight: 800, color: 'var(--orange)', fontSize: '0.78rem' }}>
           {deal.time || 'Live'}
         </span>

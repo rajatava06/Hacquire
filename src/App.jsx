@@ -7,22 +7,15 @@ import EvaluationTable from './components/EvaluationTable';
 import LatestDeals from './components/LatestDeals';
 import AdminDealForm from './components/AdminDealForm';
 import EnlargedCarouselModal from './components/EnlargedCarouselModal';
-import { 
-  fetchDealsFromDB, 
-  saveDealToDB, 
-  bulkSaveDealsToDB, 
-  deleteDealFromDB, 
-  subscribeToDealsDB 
-} from './utils/db';
+import { useGoogleSheetsSync } from './hooks/useGoogleSheetsSync';
 import {
   fetchEvaluationsFromDB,
   saveEvaluationToDB,
   bulkSaveEvaluationsToDB,
   deleteEvaluationFromDB
 } from './utils/dbEvaluations';
-import { exportToCSV, DEFAULT_DEALS } from './utils/dealsData';
-import { DEFAULT_EVALUATIONS } from './utils/evaluationData';
-import { AlertCircle, CheckCircle2, RefreshCw, Database, Award } from 'lucide-react';
+import { exportToCSV } from './utils/dealsData';
+import { AlertCircle, CheckCircle2, RefreshCw, Database, Award, RefreshCcw } from 'lucide-react';
 
 export default function App() {
   const [deals, setDeals] = useState([]);
@@ -34,25 +27,22 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [isCarouselOpen, setIsCarouselOpen] = useState(false);
 
-  // Initial DB Load & Real-Time Sync Subscription
-  useEffect(() => {
-    async function loadData() {
-      const dealsData = await fetchDealsFromDB();
-      setDeals(dealsData);
+  // Google Sheets is the ONLY data source for deals — syncs every 30 seconds
+  const { syncing, lastSyncTime, lastSyncCount, syncError, syncNow } = useGoogleSheetsSync({
+    onDealsUpdated: (freshDeals) => {
+      setDeals(freshDeals);
+      setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    },
+    intervalMs: 30000
+  });
 
+  // Initial evaluations load (evaluations still use DB)
+  useEffect(() => {
+    async function loadEvals() {
       const evalsData = await fetchEvaluationsFromDB();
       setEvaluations(evalsData);
-
-      setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     }
-    loadData();
-
-    const unsubscribe = subscribeToDealsDB((updatedDeals) => {
-      setDeals(updatedDeals);
-      setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    });
-
-    return () => unsubscribe();
+    loadEvals();
   }, []);
 
   // Auto-dismiss toast notification
@@ -63,26 +53,11 @@ export default function App() {
     }
   }, [toast]);
 
-  // Deal handlers
-  const handleAddDeal = useCallback(async (newDeal) => {
-    const updated = await saveDealToDB(newDeal);
-    setDeals(updated);
-    setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-  }, []);
 
-  const handleBulkAddDeals = useCallback(async (newDealsArray) => {
-    const updated = await bulkSaveDealsToDB(newDealsArray);
-    setDeals(updated);
-    setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-  }, []);
 
-  const handleDeleteDeal = useCallback(async (dealId) => {
-    if (window.confirm(`Are you sure you want to delete Deal ID ${dealId}?`)) {
-      const updated = await deleteDealFromDB(dealId);
-      setDeals(updated);
-      setToast({ type: 'success', message: `Deal ${dealId} deleted.` });
-      setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    }
+  // Deals are read-only from Google Sheets — delete is disabled
+  const handleDeleteDeal = useCallback(() => {
+    setToast({ type: 'error', message: 'Deals come from Google Sheets. Edit the sheet directly.' });
   }, []);
 
   // Evaluation handlers
@@ -140,18 +115,68 @@ export default function App() {
         onOpenCarousel={() => setIsCarouselOpen(true)}
       />
 
+      {/* Google Sheets Live Sync Status Banner */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '12px',
+        padding: '8px 16px', margin: '0 0 12px',
+        background: syncError
+          ? 'rgba(255,60,60,0.08)'
+          : syncing
+            ? 'rgba(255,174,66,0.10)'
+            : 'rgba(50,213,131,0.08)',
+        border: `1px solid ${syncError ? 'rgba(255,60,60,0.3)' : syncing ? 'rgba(255,174,66,0.3)' : 'rgba(50,213,131,0.25)'}`,
+        borderRadius: '10px', fontSize: '0.82rem', flexWrap: 'wrap'
+      }}>
+        <span style={{
+          display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700,
+          color: syncError ? '#ff6b6b' : syncing ? '#ffae42' : '#32d583'
+        }}>
+          {syncing ? (
+            <RefreshCcw size={14} style={{ animation: 'spin 1s linear infinite' }} />
+          ) : syncError ? (
+            <AlertCircle size={14} />
+          ) : (
+            <CheckCircle2 size={14} />
+          )}
+          {syncing ? 'Syncing from Google Sheets…' : syncError ? 'Sync Error' : '● Google Sheets Synced'}
+        </span>
+        {lastSyncTime && !syncError && (
+          <span style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>
+            Last sync: {lastSyncTime}
+            {lastSyncCount != null && ` · ${lastSyncCount} deals loaded`}
+          </span>
+        )}
+        {syncError && (
+          <span style={{ color: '#ff6b6b', fontSize: '0.78rem' }}>{syncError}</span>
+        )}
+        <span style={{ marginLeft: 'auto' }}>
+          <button
+            onClick={syncNow}
+            disabled={syncing}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '5px',
+              padding: '4px 12px', borderRadius: '7px', fontSize: '0.78rem',
+              background: 'rgba(255,174,66,0.15)', border: '1px solid rgba(255,174,66,0.4)',
+              color: '#ffae42', cursor: syncing ? 'not-allowed' : 'pointer', fontWeight: 700
+            }}
+          >
+            <RefreshCcw size={12} />
+            Sync Now
+          </button>
+        </span>
+      </div>
+
       {/* 1. Full-Width Wide View OC Admin Panel at the Top */}
       <section style={{ marginBottom: '18px' }}>
         <AdminDealForm
           deals={deals}
           evaluations={evaluations}
-          onAddDeal={handleAddDeal}
-          onBulkAddDeals={handleBulkAddDeals}
           onAddEvaluation={handleAddEvaluation}
           onBulkAddEvaluations={handleBulkAddEvaluations}
           setToast={setToast}
         />
       </section>
+
 
       {/* 2. Market Overview & Main Content below the OC Admin Panel */}
       <section className="grid">
