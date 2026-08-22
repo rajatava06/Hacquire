@@ -12,15 +12,12 @@ const SHEET_SOURCES = [
   {
     id: '1jhUKhxEkY5mfgJNHnvHgIKQ5PWEMLkgNgeqWKy255zk',
     label: 'Hall-A',
-    // Try consolidated tab name first, fall back to officer tabs
     consolidatedTab: 'Consolidated_Live_Feed',
     officerTabs: ['Officer_1', 'Officer_2', 'Officer_3', 'Officer_4']
   },
   {
     id: '1Ji0QTIKxeNA2sb6wzUIi5LjGOVg-kOqogZHbtWDQioI',
     label: 'Hall-B',
-    // GID 70228119 is the active tab shown in the URL
-    consolidatedGid: '70228119',
     consolidatedTab: 'Consolidated_Live_Feed',
     officerTabs: ['Officer_1', 'Officer_2', 'Officer_3', 'Officer_4']
   }
