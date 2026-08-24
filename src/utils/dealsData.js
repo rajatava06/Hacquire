@@ -28,8 +28,7 @@ export function saveDealsToStorage(deals) {
 export function formatMoney(value) {
   const num = Number(value);
   if (isNaN(num)) return '₹0 Cr';
-  const formatted = num.toFixed(num % 1 !== 0 ? 2 : 0);
-  return `₹${formatted} Cr`;
+  return `₹${num} Cr`;
 }
 
 /**

@@ -14,7 +14,7 @@ export default function Header({ lastUpdated, onOpenCarousel }) {
             <Activity className="w-3 h-3 text-amber-500" size={12} />
             FED KIIT presents
           </div>
-          <h1>HACQUIRE — Live Deal Tracker</h1>
+          <h1>HACQUIRE | FEDKIIT</h1>
         </div>
       </div>
       <div className="header-meta">
